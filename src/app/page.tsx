@@ -1,7 +1,31 @@
+"use client";
+
 import Link from "next/link";
 import { Plus, Dumbbell, Trophy, Zap } from "lucide-react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/lib/db";
 
 export default function HomePage() {
+  const stats = useLiveQuery(async () => {
+    const workouts = await db.workouts.toArray();
+    const totalVolume = workouts.reduce((acc, w) => acc + (w.totalVolume || 0), 0);
+    const prCount = workouts.reduce((acc, w) => acc + (w.prsAchieved?.length || 0), 0);
+    
+    return {
+      workouts: workouts.length,
+      volume: totalVolume,
+      prs: prCount,
+      streak: 0, // Placeholder
+    };
+  });
+
+  const displayStats = [
+    { label: "Streak", value: stats?.streak || 0, icon: Zap, color: "text-primary" },
+    { label: "Workouts", value: stats?.workouts || 0, icon: Dumbbell, color: "text-blue-500" },
+    { label: "PRs", value: stats?.prs || 0, icon: Trophy, color: "text-warning" },
+    { label: "Volume", value: `${(stats?.volume || 0).toLocaleString()}kg`, icon: Plus, color: "text-green-500" },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -12,12 +36,7 @@ export default function HomePage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {[
-          { label: "Streak", value: "0", icon: Zap, color: "text-primary" },
-          { label: "Workouts", value: "0", icon: Dumbbell, color: "text-blue-500" },
-          { label: "PRs", value: "0", icon: Trophy, color: "text-warning" },
-          { label: "Volume", value: "0kg", icon: Plus, color: "text-green-500" },
-        ].map((stat) => (
+        {displayStats.map((stat) => (
           <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-2">
               <stat.icon className={`h-4 w-4 ${stat.color}`} />

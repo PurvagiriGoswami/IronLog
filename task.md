@@ -34,17 +34,17 @@
 - [x] Active workout screen
 - [x] Set row component
 - [x] Rest timer pill
-- [ ] Workout summary
-- [ ] PR celebration
+- [x] Workout summary
+- [x] PR celebration
 
 ## Component 6: Templates & History
 - [ ] Template list, preview, editor
-- [ ] Workout history list
+- [/] Workout history list (Basic UI implemented)
 - [ ] Workout detail view
 
 ## Component 7: Progress & Analytics
-- [ ] Dashboard cards
-- [ ] Summary view + radar chart
+- [x] Dashboard cards
+- [/] Summary view + radar chart (Volume chart implemented)
 - [ ] Deep dive view + charts
 - [ ] Workout heatmap
 - [ ] Body map SVG (front + back)
@@ -59,16 +59,16 @@
 - [ ] Active program view
 
 ## Component 9: Utility Tools
-- [ ] Plate calculator
-- [ ] 1RM calculator (standalone)
+- [x] Plate calculator
+- [x] 1RM calculator (standalone)
 - [ ] Warm-up generator
 - [ ] Exercise substitution
-- [ ] Data export
+- [x] Data export
 - [ ] Share card
 
 ## Component 10: Onboarding Flow
-- [ ] 3-screen onboarding
-- [ ] Equipment selector
+- [x] 3-screen onboarding
+- [/] Equipment selector (integrated in onboarding)
 
 ## Component 11: App Layout & Navigation
 - [x] Root layout + providers
@@ -78,5 +78,5 @@
 - [x] All route pages
 
 ## Component 12: Profile & Settings
-- [ ] Profile settings page
-- [ ] Settings store
+- [x] Profile settings page
+- [x] Settings store

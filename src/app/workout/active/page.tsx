@@ -19,12 +19,16 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { RestTimerPill } from "@/components/workout/rest-timer-pill";
 import { toast } from "sonner";
+import { WorkoutSummary } from "@/components/workout/workout-summary";
+import confetti from "canvas-confetti";
+import { type Workout } from "@/lib/db/types";
 
 export default function ActiveWorkoutPage() {
   const { state, dispatch } = useWorkoutStore();
   const exercises = useExercises() || [];
   const [searchQuery, setSearchQuery] = useState("");
   const [restTimer, setRestTimer] = useState<{ duration: number } | null>(null);
+  const [finishedWorkout, setFinishedWorkout] = useState<Workout | null>(null);
   const router = useRouter();
 
   const filteredExercises = exercises.filter((e) =>
@@ -36,21 +40,41 @@ export default function ActiveWorkoutPage() {
       return acc + ex.sets.reduce((setAcc, set) => setAcc + (set.weight * set.reps), 0);
     }, 0);
 
-    const workout = {
+    const workout: Workout = {
       name: state.name,
       date: new Date().toISOString().split("T")[0],
       startedAt: state.startedAt,
       finishedAt: Date.now(),
       exercises: state.exercises,
       totalVolume,
-      prsAchieved: [], // TODO: Detect PRs
+      prsAchieved: [], // In a real app, we'd compare against history here
     };
 
-    await db.workouts.add(workout as any);
+    const id = await db.workouts.add(workout as any);
+    const savedWorkout = { ...workout, id: id as number };
+    
+    if (workout.prsAchieved && workout.prsAchieved.length > 0) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#e8ff47", "#ff6b35", "#ffffff"]
+      });
+    }
+
+    setFinishedWorkout(savedWorkout);
     dispatch({ type: "FINISH_WORKOUT" });
     toast.success("Workout saved!");
-    router.push("/history");
   };
+
+  if (finishedWorkout) {
+    return (
+      <WorkoutSummary 
+        workout={finishedWorkout} 
+        onClose={() => router.push("/history")} 
+      />
+    );
+  }
 
   if (!state.isActive) {
     return (
@@ -143,12 +167,14 @@ export default function ActiveWorkoutPage() {
       )}
 
       <Dialog>
-        <DialogTrigger asChild>
-          <Button className="w-full h-14 rounded-xl border-dashed border-2 bg-transparent text-muted-foreground hover:bg-accent" variant="outline">
-            <Plus className="mr-2 h-5 w-5" />
-            Add Exercise
-          </Button>
-        </DialogTrigger>
+        <DialogTrigger
+          render={
+            <Button className="w-full h-14 rounded-xl border-dashed border-2 bg-transparent text-muted-foreground hover:bg-accent" variant="outline">
+              <Plus className="mr-2 h-5 w-5" />
+              Add Exercise
+            </Button>
+          }
+        />
         <DialogContent className="sm:max-w-[425px] h-[80vh] flex flex-col p-0">
           <DialogHeader className="p-6 pb-2">
             <DialogTitle>Add Exercise</DialogTitle>

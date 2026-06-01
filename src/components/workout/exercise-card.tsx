@@ -44,13 +44,15 @@ export function ExerciseCard({
         </div>
         
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            }
+          />
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="text-destructive" onClick={onRemoveExercise}>
+            <DropdownMenuItem variant="destructive" onClick={onRemoveExercise}>
               <Trash2 className="mr-2 h-4 w-4" />
               Remove Exercise
             </DropdownMenuItem>

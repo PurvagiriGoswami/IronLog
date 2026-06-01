@@ -5,6 +5,8 @@ import { DBProvider } from "@/components/providers/db-provider";
 import { AppShell } from "@/components/layout/app-shell";
 import { WorkoutProvider } from "@/lib/workout/workout-store";
 import { Toaster } from "@/components/ui/sonner";
+import { SettingsProvider } from "@/lib/settings/settings-store";
+import { AuthProvider } from "@/lib/auth/auth-store";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -49,10 +51,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <DBProvider>
-          <WorkoutProvider>
-            <AppShell>{children}</AppShell>
-            <Toaster position="top-center" />
-          </WorkoutProvider>
+          <AuthProvider>
+            <SettingsProvider>
+              <WorkoutProvider>
+                <AppShell>{children}</AppShell>
+                <Toaster position="top-center" />
+              </WorkoutProvider>
+            </SettingsProvider>
+          </AuthProvider>
         </DBProvider>
         <script
           dangerouslySetInnerHTML={{
